@@ -1,6 +1,6 @@
 package com.example.paymentservice.infrastructure.persistence;
 
-import com.example.paymentservice.domain.payment.Money;
+import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
 import org.springframework.stereotype.Component;
 

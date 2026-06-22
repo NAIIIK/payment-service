@@ -1,9 +1,9 @@
-package com.example.paymentservice.application;
+package com.example.paymentservice.application.service;
 
 import com.example.paymentservice.api.PaymentCreationRequest;
-import com.example.paymentservice.domain.payment.Money;
+import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
-import com.example.paymentservice.domain.payment.PaymentNotFoundException;
+import com.example.paymentservice.domain.exception.PaymentNotFoundException;
 import com.example.paymentservice.domain.payment.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

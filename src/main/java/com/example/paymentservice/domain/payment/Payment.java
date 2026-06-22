@@ -1,5 +1,6 @@
 package com.example.paymentservice.domain.payment;
 
+import com.example.paymentservice.domain.money.Money;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

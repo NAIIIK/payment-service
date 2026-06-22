@@ -1,4 +1,4 @@
-package com.example.paymentservice.domain.payment;
+package com.example.paymentservice.domain.exception;
 
 import java.util.UUID;
 

@@ -1,5 +1,6 @@
 package com.example.paymentservice.domain.payment;
 
+import com.example.paymentservice.domain.money.Money;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;

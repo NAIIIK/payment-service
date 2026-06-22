@@ -1,0 +1,26 @@
+package com.example.paymentservice.application.service;
+
+import com.example.paymentservice.api.PaymentResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.time.Duration;
+
+@Service
+@RequiredArgsConstructor
+public class IdempotencyService {
+
+    private static final Duration TTL = Duration.ofHours(24);
+    private static final String PREFIX = "idempotency:";
+
+    private final RedisTemplate<String, PaymentResponse> redisTemplate;
+
+    public PaymentResponse get(String key) {
+        return redisTemplate.opsForValue().get(PREFIX + key);
+    }
+
+    public void save(String key, PaymentResponse response) {
+        redisTemplate.opsForValue().set(PREFIX + key, response, TTL);
+    }
+}

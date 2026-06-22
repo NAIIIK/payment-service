@@ -1,6 +1,7 @@
 package com.example.paymentservice.api;
 
-import com.example.paymentservice.domain.payment.PaymentNotFoundException;
+import com.example.paymentservice.domain.exception.MissingRequiredHeaderException;
+import com.example.paymentservice.domain.exception.PaymentNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -35,6 +36,15 @@ public class GlobalExceptionHandler {
     public ProblemDetail handlePaymentNotFoundException(PaymentNotFoundException ex) {
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
         problem.setTitle("Payment not found");
+        problem.setDetail(ex.getMessage());
+
+        return problem;
+    }
+
+    @ExceptionHandler(MissingRequiredHeaderException.class)
+    public ProblemDetail handleMissingRequiredHeaderException(MissingRequiredHeaderException ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problem.setTitle("Missing required header");
         problem.setDetail(ex.getMessage());
 
         return problem;
