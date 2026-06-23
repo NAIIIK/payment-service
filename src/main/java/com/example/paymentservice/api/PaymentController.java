@@ -25,4 +25,19 @@ public class PaymentController {
     public PaymentResponse createPayment(@Valid @RequestBody PaymentCreationRequest request) {
         return PaymentResponse.from(paymentService.create(request));
     }
+
+    @PatchMapping("/{id}/process")
+    public PaymentResponse processPayment(@PathVariable UUID id) {
+        return PaymentResponse.from(paymentService.process(id));
+    }
+
+    @PatchMapping("/{id}/complete")
+    public PaymentResponse completePayment(@PathVariable UUID id) {
+        return PaymentResponse.from(paymentService.complete(id));
+    }
+
+    @PatchMapping("/{id}/fail")
+    public PaymentResponse failPayment(@PathVariable UUID id) {
+        return PaymentResponse.from(paymentService.fail(id));
+    }
 }
