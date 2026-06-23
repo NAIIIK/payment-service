@@ -1,11 +1,12 @@
-package com.example.paymentservice.infrastructure.persistence;
+package com.example.paymentservice.infrastructure.persistence.mapper;
 
 import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
+import com.example.paymentservice.infrastructure.persistence.entity.PaymentJpaEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public final class PaymentMapper {
+public class PaymentMapper {
 
     public PaymentJpaEntity toJpa(Payment payment) {
         PaymentJpaEntity entity = new PaymentJpaEntity();

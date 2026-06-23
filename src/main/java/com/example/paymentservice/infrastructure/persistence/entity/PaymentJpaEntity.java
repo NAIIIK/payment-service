@@ -1,4 +1,4 @@
-package com.example.paymentservice.infrastructure.persistence;
+package com.example.paymentservice.infrastructure.persistence.entity;
 
 import com.example.paymentservice.domain.payment.PaymentStatus;
 import jakarta.persistence.*;

@@ -16,6 +16,7 @@ import java.util.UUID;
 public class PaymentService {
 
     private final PaymentRepository repository;
+    private final AuditService auditService;
 
     @Transactional
     public Payment create(PaymentCreationRequest request) {
@@ -23,6 +24,7 @@ public class PaymentService {
         Payment payment = Payment.create(amount, request.senderId(), request.recipientId());
 
         repository.save(payment);
+        auditService.record(payment.getId(), null, payment.getStatus());
         return payment;
     }
 

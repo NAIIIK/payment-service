@@ -5,6 +5,7 @@ import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
 import com.example.paymentservice.domain.exception.PaymentNotFoundException;
 import com.example.paymentservice.domain.payment.PaymentStatus;
+import com.example.paymentservice.infrastructure.persistence.repository.PaymentRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
