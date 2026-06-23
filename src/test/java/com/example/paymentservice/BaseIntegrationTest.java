@@ -11,11 +11,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
-@Testcontainers
 public abstract class BaseIntegrationTest {
 
     @Container
-    @ServiceConnection
     static PostgreSQLContainer<?> postgres =
             new PostgreSQLContainer<>("postgres:15-alpine");
 
@@ -24,8 +22,16 @@ public abstract class BaseIntegrationTest {
             .withExposedPorts(6379)
             .waitingFor(Wait.forListeningPort());
 
+    static {
+        postgres.start();
+        redis.start();
+    }
+
     @DynamicPropertySource
     static void redisProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgres::getJdbcUrl);
+        registry.add("spring.datasource.username", postgres::getUsername);
+        registry.add("spring.datasource.password", postgres::getPassword);
         registry.add("spring.data.redis.host", redis::getHost);
         registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
     }
