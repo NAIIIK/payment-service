@@ -1,17 +1,14 @@
 spring:
   application:
     name: payment-service
-  datasource:
-    url: jdbc:postgresql://localhost:5432/payment_service
-    username: postgres
-    password: postgres
-  data:
-    redis:
-      host: localhost
-      port: 6379
+  profiles:
+    active: dev
   jpa:
     hibernate:
       ddl-auto: validate
     open-in-view: false
   flyway:
     enabled: true
+
+server:
+  port: 8080
