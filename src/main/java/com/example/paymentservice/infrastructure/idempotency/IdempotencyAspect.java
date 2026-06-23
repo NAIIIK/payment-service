@@ -9,8 +9,8 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.Optional;
 
 @Aspect
 @Component
@@ -18,25 +18,19 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class IdempotencyAspect {
 
     private final IdempotencyService idempotencyService;
+    private final HttpServletRequest request;
 
     @Around("@annotation(idempotentConfig)")
-    public PaymentResponse handleIdempotency(ProceedingJoinPoint joinPoint, Idempotent idempotentConfig) throws Throwable {
-        HttpServletRequest request =
-                ((ServletRequestAttributes) RequestContextHolder
-                        .currentRequestAttributes())
-                            .getRequest();
-
+    public Object handleIdempotencyForPaymentResponse(ProceedingJoinPoint joinPoint, Idempotent idempotentConfig) throws Throwable {
         String headerName = idempotentConfig.headerName();
         String key = request.getHeader(headerName);
 
         if (key == null || key.isBlank()) throw new MissingRequiredHeaderException(headerName);
 
-        Object cachedResponse = idempotencyService.get(key);
-
-        if (cachedResponse instanceof PaymentResponse paymentResponse) return paymentResponse;
+        Optional<PaymentResponse> cachedResponse = idempotencyService.get(key);
+        if (cachedResponse.isPresent()) return cachedResponse.get();
 
         PaymentResponse result = (PaymentResponse) joinPoint.proceed();
-
         idempotencyService.save(key, result);
 
         return result;

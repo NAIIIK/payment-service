@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +17,8 @@ public class IdempotencyService {
 
     private final RedisTemplate<String, PaymentResponse> redisTemplate;
 
-    public PaymentResponse get(String key) {
-        return redisTemplate.opsForValue().get(PREFIX + key);
+    public Optional<PaymentResponse> get(String key) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(PREFIX + key));
     }
 
     public void save(String key, PaymentResponse response) {

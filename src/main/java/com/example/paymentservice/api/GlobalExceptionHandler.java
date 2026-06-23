@@ -1,5 +1,6 @@
 package com.example.paymentservice.api;
 
+import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
 import com.example.paymentservice.domain.exception.MissingRequiredHeaderException;
 import com.example.paymentservice.domain.exception.PaymentNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public final class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail handleValidationException(MethodArgumentNotValidException ex) {
@@ -34,19 +35,23 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PaymentNotFoundException.class)
     public ProblemDetail handlePaymentNotFoundException(PaymentNotFoundException ex) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
-        problem.setTitle("Payment not found");
-        problem.setDetail(ex.getMessage());
-
-        return problem;
+        return problem(HttpStatus.NOT_FOUND, "Payment not found", ex);
     }
 
     @ExceptionHandler(MissingRequiredHeaderException.class)
     public ProblemDetail handleMissingRequiredHeaderException(MissingRequiredHeaderException ex) {
-        ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
-        problem.setTitle("Missing required header");
-        problem.setDetail(ex.getMessage());
+        return problem(HttpStatus.BAD_REQUEST, "Missing required header", ex);
+    }
 
+    @ExceptionHandler(InvalidPaymentStatusException.class)
+    public ProblemDetail handleInvalidPaymentStatusException(InvalidPaymentStatusException ex) {
+        return problem(HttpStatus.CONFLICT, "Invalid payment status", ex);
+    }
+
+    private ProblemDetail problem(HttpStatus status, String title, Exception ex) {
+        ProblemDetail problem = ProblemDetail.forStatus(status);
+        problem.setTitle(title);
+        problem.setDetail(ex.getMessage());
         return problem;
     }
 }

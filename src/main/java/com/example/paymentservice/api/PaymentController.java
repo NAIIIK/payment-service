@@ -1,6 +1,5 @@
 package com.example.paymentservice.api;
 
-import com.example.paymentservice.application.service.IdempotencyService;
 import com.example.paymentservice.application.service.PaymentService;
 import com.example.paymentservice.infrastructure.idempotency.Idempotent;
 import jakarta.validation.Valid;
@@ -12,10 +11,9 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payments")
-public class PaymentController {
+public final class PaymentController {
 
     private final PaymentService paymentService;
-    private final IdempotencyService idempotencyService;
 
     @GetMapping("/{id}")
     public PaymentResponse getPaymentById(@PathVariable UUID id){

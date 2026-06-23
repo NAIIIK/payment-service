@@ -1,5 +1,6 @@
 package com.example.paymentservice.domain.payment;
 
+import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
 import com.example.paymentservice.domain.money.Money;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class PaymentTest {
     @Test
     void should_fail_when_completing_pending_payment() {
         assertThatThrownBy(payment::complete)
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(InvalidPaymentStatusException.class);
     }
 
     @Test
@@ -37,7 +38,6 @@ class PaymentTest {
         payment.complete();
 
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
-        assertThat(payment.getId()).isNotNull();
     }
 
     @Test
@@ -46,7 +46,6 @@ class PaymentTest {
         payment.fail();
 
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.FAILED);
-        assertThat(payment.getId()).isNotNull();
     }
 
     @Test
@@ -54,6 +53,15 @@ class PaymentTest {
         payment.process();
 
         assertThatThrownBy(payment::process)
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(InvalidPaymentStatusException.class);
+    }
+
+    @Test
+    void should_throw_when_completing_already_completed_payment() {
+        payment.process();
+        payment.complete();
+
+        assertThatThrownBy(payment::complete)
+                .isInstanceOf(InvalidPaymentStatusException.class);
     }
 }

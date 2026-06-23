@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class MoneyTest {
@@ -37,5 +38,13 @@ class MoneyTest {
     void should_fail_when_currency_is_null() {
         assertThatThrownBy(() -> new Money(new BigDecimal("10.0"), null))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void should_create_money_with_valid_arguments() {
+        Money money = new Money(new BigDecimal("100.00"), "USD");
+
+        assertThat(money.amount()).isEqualByComparingTo(new BigDecimal("100.00"));
+        assertThat(money.currency()).isEqualTo("USD");
     }
 }

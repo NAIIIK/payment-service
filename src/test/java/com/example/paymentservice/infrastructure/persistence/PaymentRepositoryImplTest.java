@@ -17,8 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Transactional
 class PaymentRepositoryImplTest extends BaseIntegrationTest {
 
-    @Autowired
-    private PaymentRepositoryImpl repository;
+    private final PaymentRepositoryImpl repository;
+
+    public PaymentRepositoryImplTest(@Autowired PaymentRepositoryImpl repository) {
+        this.repository = repository;
+    }
 
     @Test
     void should_save_and_find_payment() {
@@ -40,5 +43,20 @@ class PaymentRepositoryImplTest extends BaseIntegrationTest {
     void should_return_empty_when_payment_not_found() {
         var result = repository.findById(UUID.randomUUID());
         assertThat(result).isEmpty();
+    }
+
+    @Test
+    void should_update_payment_status() {
+        Money amount = new Money(new BigDecimal("100.00"), "USD");
+        Payment payment = Payment.create(amount, 1L, 2L);
+        repository.save(payment);
+
+        payment.process();
+        repository.save(payment);
+
+        Payment found = repository.findById(payment.getId())
+                .orElseThrow(() -> new PaymentNotFoundException(payment.getId()));
+
+        assertThat(found.getStatus()).isEqualTo(PaymentStatus.PROCESSING);
     }
 }

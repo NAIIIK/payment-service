@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.UUID;
 
@@ -18,6 +19,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class PaymentControllerTest extends BaseIntegrationTest {
 
+    private static final String URI_TEMPLATE = "/api/v1/payments";
+    private static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON;
+    private static final String VALID_CONTENT = """
+                            {
+                                "senderId": 1,
+                                "recipientId": 2,
+                                "amount": 100.00,
+                                "currency": "USD"
+                            }
+                            """;
+
     private final MockMvc mockMvc;
 
     PaymentControllerTest(@Autowired MockMvc mockMvc) {
@@ -26,17 +38,7 @@ class PaymentControllerTest extends BaseIntegrationTest {
 
     @Test
     void should_create_payment() throws Exception {
-        mockMvc.perform(post("/api/v1/payments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Idempotency-Key", UUID.randomUUID().toString())
-                        .content("""
-                            {
-                                "senderId": 1,
-                                "recipientId": 2,
-                                "amount": 100.00,
-                                "currency": "USD"
-                            }
-                            """))
+        performPostWithHeader(VALID_CONTENT, UUID.randomUUID().toString())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.status").value("PENDING"))
@@ -46,17 +48,16 @@ class PaymentControllerTest extends BaseIntegrationTest {
 
     @Test
     void should_return_400_when_amount_is_negative() throws Exception {
-        mockMvc.perform(post("/api/v1/payments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Idempotency-Key", UUID.randomUUID().toString())
-                        .content("""
+        String invalidContent = """
                             {
                                 "senderId": 1,
                                 "recipientId": 2,
                                 "amount": -100.00,
                                 "currency": "USD"
                             }
-                            """))
+                            """;
+
+        performPostWithHeader(invalidContent, UUID.randomUUID().toString())
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.title").value("Validation failed"));
     }
@@ -71,28 +72,13 @@ class PaymentControllerTest extends BaseIntegrationTest {
     void should_return_same_response_for_same_idempotency_key() throws Exception {
         String idempotencyKey = UUID.randomUUID().toString();
 
-        String requestBody = """
-                {
-                    "senderId": 1,
-                    "recipientId": 2,
-                    "amount": 100.00,
-                    "currency": "USD"
-                }
-                """;
-
-        String firstResponse = mockMvc.perform(post("/api/v1/payments")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .header("Idempotency-Key", idempotencyKey)
-                    .content(requestBody))
+        String firstResponse = performPostWithHeader(VALID_CONTENT, idempotencyKey)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString();
 
-        String secondResponse = mockMvc.perform(post("/api/v1/payments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Idempotency-Key", idempotencyKey)
-                        .content(requestBody))
+        String secondResponse = performPostWithHeader(VALID_CONTENT, idempotencyKey)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -103,17 +89,17 @@ class PaymentControllerTest extends BaseIntegrationTest {
 
     @Test
     void should_return_400_when_header_is_missing() throws Exception {
-        mockMvc.perform(post("/api/v1/payments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                            {
-                                "senderId": 1,
-                                "recipientId": 2,
-                                "amount": 100.00,
-                                "currency": "USD"
-                            }
-                            """))
+        mockMvc.perform(post(URI_TEMPLATE)
+                        .contentType(CONTENT_TYPE)
+                        .content(VALID_CONTENT))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.title").value("Missing required header"));
+    }
+
+    private ResultActions performPostWithHeader(String content, String idempotencyKey) throws Exception {
+        return mockMvc.perform(post(URI_TEMPLATE)
+                .contentType(CONTENT_TYPE)
+                .content(content)
+                .header("Idempotency-Key", idempotencyKey));
     }
 }

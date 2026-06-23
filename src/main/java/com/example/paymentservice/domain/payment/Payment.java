@@ -1,12 +1,15 @@
 package com.example.paymentservice.domain.payment;
 
+import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
 import com.example.paymentservice.domain.money.Money;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
+@ToString(exclude = {"senderId", "recipientId"})
 public class Payment {
 
     private UUID id;
@@ -44,25 +47,23 @@ public class Payment {
     }
 
     public void process() {
-        if (status != PaymentStatus.PENDING)
-            throw new IllegalStateException(
-                "Payment status must be PENDING. Current status is " + status
-        );
+        validateStatus(PaymentStatus.PENDING);
         this.status = PaymentStatus.PROCESSING;
     }
 
     public void complete() {
-        if (status != PaymentStatus.PROCESSING)
-            throw new IllegalStateException(
-                    "Payment status must be PROCESSING. Current status is " + status
-            );
+        validateStatus(PaymentStatus.PROCESSING);
         this.status = PaymentStatus.COMPLETED;
     }
 
     public void fail() {
-        if (status != PaymentStatus.PROCESSING) throw new IllegalStateException(
-                "Payment status must be PROCESSING. Current status is " + status
-        );
+        validateStatus(PaymentStatus.PROCESSING);
         this.status = PaymentStatus.FAILED;
+    }
+
+    private void validateStatus(PaymentStatus expected) {
+        if (status != expected) {
+            throw new InvalidPaymentStatusException(expected, status);
+        }
     }
 }
