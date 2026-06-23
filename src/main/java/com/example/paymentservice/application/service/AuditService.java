@@ -2,7 +2,7 @@ package com.example.paymentservice.application.service;
 
 import com.example.paymentservice.domain.payment.PaymentStatus;
 import com.example.paymentservice.domain.paymentHistory.PaymentHistory;
-import com.example.paymentservice.infrastructure.persistence.repository.PaymentHistoryRepositoryImpl;
+import com.example.paymentservice.domain.paymentHistory.PaymentHistoryRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AuditService {
 
-    private final PaymentHistoryRepositoryImpl repository;
+    private final PaymentHistoryRepository repository;
 
     public void record(UUID paymentId, PaymentStatus oldStatus, PaymentStatus newStatus) {
         repository.save(new PaymentHistory(
