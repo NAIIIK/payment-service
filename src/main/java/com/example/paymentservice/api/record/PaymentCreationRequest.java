@@ -1,4 +1,4 @@
-package com.example.paymentservice.api;
+package com.example.paymentservice.api.record;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;

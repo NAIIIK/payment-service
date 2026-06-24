@@ -1,4 +1,4 @@
-package com.example.paymentservice.api;
+package com.example.paymentservice.api.record;
 
 import com.example.paymentservice.domain.payment.Payment;
 import com.example.paymentservice.domain.payment.PaymentStatus;
