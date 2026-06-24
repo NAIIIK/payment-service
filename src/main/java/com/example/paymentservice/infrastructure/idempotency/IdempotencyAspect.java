@@ -1,6 +1,6 @@
 package com.example.paymentservice.infrastructure.idempotency;
 
-import com.example.paymentservice.api.PaymentResponse;
+import com.example.paymentservice.api.record.PaymentResponse;
 import com.example.paymentservice.application.service.IdempotencyService;
 import com.example.paymentservice.domain.exception.MissingRequiredHeaderException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,6 +1,6 @@
 package com.example.paymentservice.application.service;
 
-import com.example.paymentservice.api.PaymentCreationRequest;
+import com.example.paymentservice.api.record.PaymentCreationRequest;
 import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
 import com.example.paymentservice.domain.exception.PaymentNotFoundException;

@@ -18,7 +18,7 @@ public class LoggingAspect {
     @Pointcut("execution(* com.example.paymentservice.application.service..*.*(..))")
     public void servicePackagePointcut() {}
 
-    @Pointcut("execution(* com.example.paymentservice.api.GlobalExceptionHandler.*(..))")
+    @Pointcut("execution(* com.example.paymentservice.api.exceptionHandler.GlobalExceptionHandler.*(..))")
     public void executionHandlerPointcut() {}
 
     @Around("servicePackagePointcut()")

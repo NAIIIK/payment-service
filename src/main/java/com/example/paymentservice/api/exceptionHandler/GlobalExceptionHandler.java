@@ -1,4 +1,4 @@
-package com.example.paymentservice.api;
+package com.example.paymentservice.api.exceptionHandler;
 
 import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
 import com.example.paymentservice.domain.exception.MissingRequiredHeaderException;

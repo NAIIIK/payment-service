@@ -1,6 +1,6 @@
 package com.example.paymentservice.infrastructure.config;
 
-import com.example.paymentservice.api.PaymentResponse;
+import com.example.paymentservice.api.record.PaymentResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
