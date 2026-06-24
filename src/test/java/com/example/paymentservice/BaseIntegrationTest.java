@@ -1,6 +1,7 @@
 package com.example.paymentservice;
 
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
@@ -9,6 +10,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 
 @SpringBootTest
+@AutoConfigureMockMvc(addFilters = false)
 public abstract class BaseIntegrationTest {
 
     @Container
