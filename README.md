@@ -1,0 +1,211 @@
+# Payment Service
+
+A RESTful payment processing service built with Java 21 and Spring Boot 4. Demonstrates production-grade patterns: hexagonal architecture, idempotency, optimistic locking, audit trail, and structured logging.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Language | Java 21 |
+| Framework | Spring Boot 4.1 |
+| Database | PostgreSQL 15 |
+| Migrations | Flyway |
+| Cache | Redis 7 |
+| ORM | Hibernate / Spring Data JPA |
+| Testing | JUnit 5, Testcontainers |
+| Documentation | SpringDoc OpenAPI 3 |
+| Build | Maven |
+| Infrastructure | Docker Compose |
+
+---
+
+## Architecture
+
+The project follows **Hexagonal Architecture** (Ports & Adapters). The domain has no dependencies on Spring or JPA — it is plain Java.
+
+```
+src/main/java/com/example/paymentservice/
+├── domain/
+│   ├── payment/         # Payment aggregate, PaymentStatus, PaymentRepository (interface)
+│   ├── paymentHistory/  # PaymentHistory record, PaymentHistoryRepository (interface)
+│   ├── money/           # Money value object
+│   └── exception/       # Domain exceptions
+├── application/
+│   └── service/         # PaymentService, AuditService, IdempotencyService
+├── infrastructure/
+│   ├── persistence/     # JPA entities, mappers, repository implementations
+│   ├── idempotency/     # @Idempotent annotation + IdempotencyAspect
+│   ├── logging/         # LoggingAspect
+│   └── config/          # RedisConfig, OpenApiConfig
+└── api/
+    ├── PaymentController.java
+    ├── GlobalExceptionHandler.java
+    ├── PaymentCreationRequest.java
+    └── PaymentResponse.java
+```
+
+### Dependency rule
+
+```
+api → application → domain ← infrastructure
+```
+
+`domain` knows nothing about Spring, JPA, or Redis. `infrastructure` implements domain interfaces.
+
+---
+
+## Database Schema
+
+### payments
+| Column | Type | Notes                                     |
+|---|---|-------------------------------------------|
+| id | UUID | Primary key, generated in domain          |
+| sender_id | BIGINT |                                           |
+| recipient_id | BIGINT |                                           |
+| amount | NUMERIC(19,4) | Never use FLOAT for money                 |
+| currency | VARCHAR(3) | ISO 4217 (USD, EUR, PLN)                  |
+| status | VARCHAR(20) | PENDING / PROCESSING / COMPLETED / FAILED |
+| version | BIGINT | Optimistic locking                        |
+| created_at | TIMESTAMP |                                           |
+
+### payment_history
+| Column | Type | Notes |
+|---|---|---|
+| id | UUID | Primary key |
+| payment_id | UUID | FK → payments(id) |
+| old_status | VARCHAR(20) | NULL on creation |
+| new_status | VARCHAR(20) | |
+| changed_at | TIMESTAMP | |
+
+---
+
+## Payment State Machine
+
+```
+PENDING → PROCESSING → COMPLETED
+                    ↘ FAILED
+```
+
+Status transitions are validated inside the `Payment` aggregate. Calling `complete()` on a `PENDING` payment throws `InvalidPaymentStatusException` (409 Conflict).
+
+---
+
+## Running Locally
+
+### Prerequisites
+- Docker Desktop
+- Java 21
+- Maven
+
+### Start infrastructure
+
+```bash
+docker-compose up -d
+```
+
+This starts PostgreSQL on port `5432` and Redis on port `6379`.
+
+### Run the application
+
+```bash
+mvn spring-boot:run
+```
+
+The application starts on `http://localhost:8080` with profile `dev`.
+
+### Swagger UI
+
+```
+http://localhost:8080/swagger-ui.html
+```
+
+---
+
+## API Examples
+
+### Create a payment
+
+```bash
+curl -X POST http://localhost:8080/api/v1/payments \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: unique-key-123" \
+  -d '{
+    "senderId": 1,
+    "recipientId": 2,
+    "amount": 100.00,
+    "currency": "USD"
+  }'
+```
+
+Response:
+```json
+{
+  "id": "b27595ca-e46e-4f96-964b-f93555730575",
+  "senderId": 1,
+  "recipientId": 2,
+  "amount": 100.00,
+  "currency": "USD",
+  "status": "PENDING",
+  "createdAt": "2026-06-23T12:00:00"
+}
+```
+
+### Get a payment
+
+```bash
+curl http://localhost:8080/api/v1/payments/{id}
+```
+
+### Process a payment
+
+```bash
+curl -X PATCH http://localhost:8080/api/v1/payments/{id}/process
+```
+
+### Complete a payment
+
+```bash
+curl -X PATCH http://localhost:8080/api/v1/payments/{id}/complete
+```
+
+### Fail a payment
+
+```bash
+curl -X PATCH http://localhost:8080/api/v1/payments/{id}/fail
+```
+
+---
+
+## Key Architectural Decisions
+
+### Idempotency
+Every `POST /payments` request requires an `Idempotency-Key` header. The key and its response are stored in Redis with a 24-hour TTL. Duplicate requests return the cached response without creating a new payment. Implemented as a reusable `@Idempotent` AOP annotation.
+
+### Hexagonal Architecture
+The `Payment` domain class is a plain Java object with no framework annotations. It contains all business logic including state machine validation. JPA mapping lives in a separate `PaymentJpaEntity` in the infrastructure layer. This means domain logic can be unit-tested without starting Spring or a database.
+
+### Optimistic Locking
+`PaymentJpaEntity` uses `@Version` to prevent lost updates under concurrent requests. If two requests attempt to update the same payment simultaneously, the second one receives an `OptimisticLockException`.
+
+### Audit Trail
+Every status change is recorded in `payment_history` within the same transaction as the payment update. This provides a complete, traceable history of each payment's lifecycle.
+
+### AOP Logging
+Method entry, exit, and execution time are logged via `LoggingAspect` without polluting business logic. Exception handlers are logged separately with a concise message rather than a full stack trace.
+
+---
+
+## Running Tests
+
+```bash
+mvn test
+```
+
+Tests use Testcontainers — Docker must be running. PostgreSQL and Redis containers start automatically and are shared across all test classes.
+
+### Test coverage
+- **Unit tests** — `Payment`, `Money` domain logic
+- **Integration tests** — repository layer with real PostgreSQL
+- **End-to-end tests** — full HTTP stack with `MockMvc`
