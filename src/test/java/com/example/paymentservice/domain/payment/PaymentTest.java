@@ -1,12 +1,9 @@
 package com.example.paymentservice.domain.payment;
 
 import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
-import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.util.TestDomainDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
