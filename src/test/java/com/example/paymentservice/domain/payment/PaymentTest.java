@@ -2,6 +2,7 @@ package com.example.paymentservice.domain.payment;
 
 import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
 import com.example.paymentservice.domain.money.Money;
+import com.example.paymentservice.domain.payment.util.TestDomainDataFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +17,7 @@ class PaymentTest {
 
     @BeforeEach
     void setUp() {
-        Money amount = new Money(new BigDecimal("100.0"), "USD");
-        payment = Payment.create(amount, 1L, 2L);
+        payment = TestDomainDataFactory.createPayment();
     }
 
     @Test
