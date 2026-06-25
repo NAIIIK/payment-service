@@ -20,7 +20,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="com.example.paymentservice" level="DEBUG" additivity="false">
+        <logger name="com.example.payment_service" level="DEBUG" additivity="false">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
         </logger>
@@ -30,7 +30,7 @@
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <logger name="com.example.paymentservice" level="INFO" additivity="false">
+        <logger name="com.example.payment_service" level="INFO" additivity="false">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="FILE"/>
         </logger>
