@@ -1,6 +1,7 @@
 package com.example.paymentservice.application.service;
 
 import com.example.paymentservice.domain.user.User;
+import com.example.paymentservice.infrastructure.logging.SensitiveResult;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -20,6 +21,7 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
+    @SensitiveResult
     public String generateToken(User user) {
         return Jwts.builder()
                 .subject(user.username())

@@ -5,6 +5,8 @@ import com.example.paymentservice.domain.exception.UserNotFoundException;
 import com.example.paymentservice.domain.user.User;
 import com.example.paymentservice.domain.user.UserRepository;
 import com.example.paymentservice.domain.user.UserRole;
+import com.example.paymentservice.infrastructure.logging.Sensitive;
+import com.example.paymentservice.infrastructure.logging.SensitiveResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,8 @@ public class AuthService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public String register(String username, String password, String email) {
+    @SensitiveResult
+    public String register(String username, @Sensitive String password, String email) {
         User user = new User(
                 UUID.randomUUID(),
                 username,
@@ -32,7 +35,8 @@ public class AuthService {
         return jwtService.generateToken(user);
     }
 
-    public String login(String username, String password) {
+    @SensitiveResult
+    public String login(String username, @Sensitive String password) {
         User user = repository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(username));
 
