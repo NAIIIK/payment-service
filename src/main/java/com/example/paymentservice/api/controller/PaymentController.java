@@ -1,7 +1,7 @@
 package com.example.paymentservice.api.controller;
 
-import com.example.paymentservice.api.record.PaymentCreationRequest;
-import com.example.paymentservice.api.record.PaymentResponse;
+import com.example.paymentservice.api.dto.PaymentCreationRequest;
+import com.example.paymentservice.api.dto.PaymentResponse;
 import com.example.paymentservice.application.service.PaymentService;
 import com.example.paymentservice.infrastructure.idempotency.Idempotent;
 import jakarta.validation.Valid;

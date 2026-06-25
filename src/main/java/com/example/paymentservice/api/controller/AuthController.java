@@ -1,8 +1,8 @@
 package com.example.paymentservice.api.controller;
 
-import com.example.paymentservice.api.record.AuthResponse;
-import com.example.paymentservice.api.record.LoginRequest;
-import com.example.paymentservice.api.record.RegisterRequest;
+import com.example.paymentservice.api.dto.AuthResponse;
+import com.example.paymentservice.api.dto.LoginRequest;
+import com.example.paymentservice.api.dto.RegisterRequest;
 import com.example.paymentservice.application.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

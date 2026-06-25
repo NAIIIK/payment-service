@@ -1,4 +1,4 @@
-package com.example.paymentservice.api.record;
+package com.example.paymentservice.api.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

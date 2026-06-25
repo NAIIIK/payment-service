@@ -1,6 +1,6 @@
 package com.example.paymentservice.application.service;
 
-import com.example.paymentservice.api.record.PaymentResponse;
+import com.example.paymentservice.api.dto.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
