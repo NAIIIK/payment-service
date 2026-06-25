@@ -1,6 +1,7 @@
 package com.example.paymentservice.api.exceptionHandler;
 
 import com.example.paymentservice.domain.exception.*;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,6 +55,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UserNotFoundException.class)
     public ProblemDetail handleUserNotFoundException(UserNotFoundException ex) {
         return problem(HttpStatus.NOT_FOUND, "User not found", ex);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ProblemDetail handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        return problem(HttpStatus.CONFLICT, "Already exists", ex);
     }
 
     private ProblemDetail problem(HttpStatus status, String title, Exception ex) {
