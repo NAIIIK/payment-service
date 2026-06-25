@@ -234,13 +234,13 @@ curl -X PATCH http://localhost:8080/api/v1/payments/{id}/fail \
 
 All errors follow [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807):
 
-| Status | Title | When |
-|---|---|---|
-| 400 | Validation failed | Invalid request body |
-| 400 | Missing required header | `Idempotency-Key` not provided |
-| 401 | Unauthorized | Missing or invalid JWT token |
-| 404 | Payment not found | Payment ID does not exist |
-| 409 | Invalid payment status | Illegal state transition |
+| Status | Title                   | When                                              |
+|--------|-------------------------|---------------------------------------------------|
+| 400    | Validation failed       | Invalid request body                              |
+| 400    | Missing required header | `Idempotency-Key` not provided                    |
+| 401    | Unauthorized            | Missing or invalid JWT token / incorrect password |
+| 404    | Payment not found       | Payment ID does not exist                         |
+| 409    | Invalid payment status  | Illegal state transition                          |
 
 ---
 
@@ -275,6 +275,6 @@ mvn test
 Tests use Testcontainers — Docker must be running. PostgreSQL and Redis containers start automatically and are shared across all test classes.
 
 ### Test coverage
-- **Unit tests** — `Payment`, `Money` domain logic
+- **Unit tests** — `Payment`, `Money` domain logic; `JwtService` token generation and validation; `AuthService` with Mockito mocks
 - **Integration tests** — repository layer with real PostgreSQL
-- **End-to-end tests** — full HTTP stack with `MockMvc`
+- **End-to-end tests** — full HTTP stack with `MockMvc`: payment lifecycle, status transitions, idempotency, authentication
