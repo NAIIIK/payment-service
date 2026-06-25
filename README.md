@@ -232,7 +232,7 @@ curl -X PATCH http://localhost:8080/api/v1/payments/{id}/fail \
 
 ## Error Responses
 
-All errors follow [RFC 7807 Problem Details](https://datatracker.ietf.org/doc/html/rfc7807):
+All errors follow RFC 7807 Problem Details:
 
 | Status | Title                   | When                                              |
 |--------|-------------------------|---------------------------------------------------|
