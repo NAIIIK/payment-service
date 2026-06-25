@@ -22,12 +22,6 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(UUID id) {
-        return repository.findById(id)
-                .map(mapper::toDomain);
-    }
-
-    @Override
     public Optional<User> findByUsername(String username) {
         return repository.findByUsername(username)
                 .map(mapper::toDomain);
