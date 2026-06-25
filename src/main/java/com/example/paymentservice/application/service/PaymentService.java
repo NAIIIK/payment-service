@@ -15,12 +15,12 @@ import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PaymentService {
 
     private final PaymentRepository repository;
     private final AuditService auditService;
 
-    @Transactional
     public Payment create(PaymentCreationRequest request) {
         Money amount = new Money(request.amount(), request.currency());
         Payment payment = Payment.create(amount, request.senderId(), request.recipientId());
@@ -36,17 +36,14 @@ public class PaymentService {
                 .orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
-    @Transactional
     public Payment process(UUID id) {
         return changeStatus(id, Payment::process);
     }
 
-    @Transactional
     public Payment complete(UUID id) {
         return changeStatus(id, Payment::complete);
     }
 
-    @Transactional
     public Payment fail(UUID id) {
         return changeStatus(id, Payment::fail);
     }
