@@ -64,8 +64,8 @@ api → application → domain ← infrastructure
 | Column       | Type          | Notes                                     |
 |--------------|---------------|-------------------------------------------|
 | id           | UUID          | Primary key, generated in domain          |
-| sender_id    | BIGINT        |                                           |
-| recipient_id | BIGINT        |                                           |
+| sender_id    | UUID          |                                           |
+| recipient_id | UUID          |                                           |
 | amount       | NUMERIC(19,4) |                                           |
 | currency     | VARCHAR(3)    | ISO 4217 (USD, EUR, PLN)                  |
 | status       | VARCHAR(20)   | PENDING / PROCESSING / COMPLETED / FAILED |
