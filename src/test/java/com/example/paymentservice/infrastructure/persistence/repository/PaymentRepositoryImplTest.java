@@ -5,6 +5,7 @@ import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
 import com.example.paymentservice.domain.exception.PaymentNotFoundException;
 import com.example.paymentservice.domain.payment.PaymentStatus;
+import com.example.paymentservice.domain.payment.util.TestDomainDataFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +26,7 @@ class PaymentRepositoryImplTest extends BaseIntegrationTest {
 
     @Test
     void should_save_and_find_payment() {
-        Money amount = new Money(new BigDecimal("100.00"), "USD");
-        Payment payment = Payment.create(amount, 1L, 2L);
+        Payment payment = TestDomainDataFactory.createPayment();
 
         repository.save(payment);
 
@@ -35,8 +35,8 @@ class PaymentRepositoryImplTest extends BaseIntegrationTest {
 
         assertThat(found.getId()).isEqualTo(payment.getId());
         assertThat(found.getStatus()).isEqualTo(PaymentStatus.PENDING);
-        assertThat(found.getAmount().amount()).isEqualByComparingTo(new BigDecimal("100.00"));
-        assertThat(found.getAmount().currency()).isEqualTo("USD");
+        assertThat(found.getAmount().amount()).isEqualByComparingTo(new BigDecimal(TestDomainDataFactory.POSITIVE_MONEY_AMOUNT));
+        assertThat(found.getAmount().currency()).isEqualTo(TestDomainDataFactory.CURRENCY);
     }
 
     @Test

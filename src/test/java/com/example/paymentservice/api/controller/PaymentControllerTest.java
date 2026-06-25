@@ -1,4 +1,4 @@
-package com.example.paymentservice.api;
+package com.example.paymentservice.api.controller;
 
 import com.example.paymentservice.BaseIntegrationTest;
 import org.junit.jupiter.api.Test;
