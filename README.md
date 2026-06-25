@@ -180,8 +180,8 @@ curl -X POST http://localhost:8080/api/v1/payments \
   -H "Authorization: Bearer <token>" \
   -H "Idempotency-Key: unique-key-123" \
   -d '{
-    "senderId": 1,
-    "recipientId": 2,
+    "senderId": "UUID_1",
+    "recipientId": "UUID_2",
     "amount": 100.00,
     "currency": "USD"
   }'
@@ -190,13 +190,13 @@ curl -X POST http://localhost:8080/api/v1/payments \
 Response:
 ```json
 {
-  "id": "b27595ca-e46e-4f96-964b-f93555730575",
-  "senderId": 1,
-  "recipientId": 2,
+  "id": "UUID_1",
+  "senderId": "UUID_2",
+  "recipientId": "UUID_3",
   "amount": 100.00,
   "currency": "USD",
   "status": "PENDING",
-  "createdAt": "2026-06-24T12:00:00"
+  "createdAt": "2026-01-01T12:00:00"
 }
 ```
 
