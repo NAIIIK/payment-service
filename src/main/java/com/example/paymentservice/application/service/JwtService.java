@@ -1,6 +1,7 @@
 package com.example.paymentservice.application.service;
 
 import com.example.paymentservice.domain.user.User;
+import com.example.paymentservice.infrastructure.logging.Sensitive;
 import com.example.paymentservice.infrastructure.logging.SensitiveResult;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -32,11 +33,11 @@ public class JwtService {
                 .compact();
     }
 
-    public String extractUsername(String token) {
+    public String extractUsername(@Sensitive String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public boolean isTokenValid(String token, String username) {
+    public boolean isTokenValid(@Sensitive String token, String username) {
         return extractUsername(token).equals(username) && !isTokenExpired(token);
     }
 
