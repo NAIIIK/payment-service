@@ -27,25 +27,25 @@ A RESTful payment processing service built with Java 21 and Spring Boot 4. Demon
 The project follows **Hexagonal Architecture** (Ports & Adapters). The domain has no dependencies on Spring or JPA — it is plain Java.
 
 ```
-src/main/java/com/example/paymentservice/
+src/main/java/com/example/payment_service/
 ├── domain/
-│   ├── payment/          # Payment aggregate, PaymentStatus, PaymentRepository (interface)
-│   ├── paymentHistory/   # PaymentHistory record, PaymentHistoryRepository (interface)
-│   ├── user/             # User record, UserRole enum, UserRepository (interface)
-│   ├── money/            # Money value object
-│   └── exception/        # Domain exceptions
+│   ├── payment/           # Payment aggregate, PaymentStatus, PaymentRepository (interface)
+│   ├── payment_history/   # PaymentHistory record, PaymentHistoryRepository (interface)
+│   ├── user/              # User record, UserRole enum, UserRepository (interface)
+│   ├── money/             # Money value object
+│   └── exception/         # Domain exceptions
 ├── application/
-│   └── service/          # PaymentService, AuditService, IdempotencyService, AuthService, JwtService
+│   └── service/           # PaymentService, AuditService, IdempotencyService, AuthService, JwtService
 ├── infrastructure/
-│   ├── persistence/      # JPA entities, mappers, repository implementations
-│   ├── security/         # JwtAuthenticationFilter, UserDetailsServiceImpl
-│   ├── idempotency/      # @Idempotent annotation + IdempotencyAspect
-│   ├── logging/          # LoggingAspect
-│   └── config/           # SecurityConfig, RedisConfig, OpenApiConfig
+│   ├── persistence/       # JPA entities, mappers, repository implementations
+│   ├── security/          # JwtAuthenticationFilter, UserDetailsServiceImpl
+│   ├── idempotency/       # @Idempotent annotation + IdempotencyAspect
+│   ├── logging/           # LoggingAspect
+│   └── config/            # SecurityConfig, RedisConfig, OpenApiConfig
 └── api/
-    ├── controller/       # PaymentController, AuthController
-    ├── dto/              # PaymentCreationRequest, PaymentResponse, RegisterRequest, LoginRequest, AuthResponse
-    └── exceptionHandler/ # GlobalExceptionHandler
+    ├── controller/        # PaymentController, AuthController
+    ├── dto/               # PaymentCreationRequest, PaymentResponse, RegisterRequest, LoginRequest, AuthResponse
+    └── exception_handler/ # GlobalExceptionHandler
 ```
 
 ### Dependency rule
