@@ -1,4 +1,4 @@
-package com.example.paymentservice.api.exceptionHandler;
+package com.example.paymentservice.api.exception_handler;
 
 import com.example.paymentservice.domain.exception.*;
 import org.springframework.dao.DataIntegrityViolationException;
