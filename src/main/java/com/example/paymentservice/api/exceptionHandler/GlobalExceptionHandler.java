@@ -1,8 +1,6 @@
 package com.example.paymentservice.api.exceptionHandler;
 
-import com.example.paymentservice.domain.exception.InvalidPaymentStatusException;
-import com.example.paymentservice.domain.exception.MissingRequiredHeaderException;
-import com.example.paymentservice.domain.exception.PaymentNotFoundException;
+import com.example.paymentservice.domain.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -46,6 +44,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(InvalidPaymentStatusException.class)
     public ProblemDetail handleInvalidPaymentStatusException(InvalidPaymentStatusException ex) {
         return problem(HttpStatus.CONFLICT, "Invalid payment status", ex);
+    }
+
+    @ExceptionHandler(IncorrectPasswordException.class)
+    public ProblemDetail handleIncorrectPasswordException(IncorrectPasswordException ex) {
+        return problem(HttpStatus.UNAUTHORIZED, "Unauthorized", ex);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ProblemDetail handleUserNotFoundException(UserNotFoundException ex) {
+        return problem(HttpStatus.NOT_FOUND, "User not found", ex);
     }
 
     private ProblemDetail problem(HttpStatus status, String title, Exception ex) {

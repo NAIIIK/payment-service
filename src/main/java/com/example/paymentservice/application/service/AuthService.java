@@ -1,5 +1,7 @@
 package com.example.paymentservice.application.service;
 
+import com.example.paymentservice.domain.exception.IncorrectPasswordException;
+import com.example.paymentservice.domain.exception.UserNotFoundException;
 import com.example.paymentservice.domain.user.User;
 import com.example.paymentservice.domain.user.UserRepository;
 import com.example.paymentservice.domain.user.UserRole;
@@ -32,10 +34,10 @@ public class AuthService {
 
     public String login(String username, String password) {
         User user = repository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Username not found: " + username));
+                .orElseThrow(() -> new UserNotFoundException(username));
 
         if (!passwordEncoder.matches(password, user.password()))
-            throw new RuntimeException("Incorrect password");
+            throw new IncorrectPasswordException();
 
         return  jwtService.generateToken(user);
     }
