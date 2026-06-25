@@ -9,8 +9,8 @@ import java.util.UUID;
 
 public record PaymentResponse(
         UUID id,
-        Long senderId,
-        Long recipientId,
+        UUID senderId,
+        UUID recipientId,
         BigDecimal amount,
         String currency,
         PaymentStatus status,

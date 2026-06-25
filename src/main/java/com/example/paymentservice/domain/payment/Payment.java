@@ -13,15 +13,15 @@ import java.util.UUID;
 public class Payment {
 
     private UUID id;
-    private Long senderId;
-    private Long recipientId;
+    private UUID senderId;
+    private UUID recipientId;
     private Money amount;
     private PaymentStatus status;
     private LocalDateTime createdAt;
 
     private Payment() {}
 
-    public static Payment create(Money amount, Long senderId, Long recipientId) {
+    public static Payment create(Money amount, UUID senderId, UUID recipientId) {
         Payment payment = new Payment();
         payment.id = UUID.randomUUID();
         payment.senderId = senderId;
@@ -33,7 +33,7 @@ public class Payment {
         return payment;
     }
 
-    public static Payment restore(UUID id, Long senderId, Long recipientId,
+    public static Payment restore(UUID id, UUID senderId, UUID recipientId,
                                   Money amount, PaymentStatus status, LocalDateTime createdAt) {
         Payment payment = new Payment();
         payment.id = id;

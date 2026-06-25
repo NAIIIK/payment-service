@@ -22,8 +22,8 @@ class PaymentControllerTest extends BaseIntegrationTest {
     private static final MediaType CONTENT_TYPE = MediaType.APPLICATION_JSON;
     private static final String VALID_CONTENT = """
                             {
-                                "senderId": 1,
-                                "recipientId": 2,
+                                "senderId": "a1dc0476-fdf0-440e-ae0c-58090ba7ac0c",
+                                "recipientId": "b2ec1587-aeb1-551f-bf1d-69101cb8bd1d",
                                 "amount": 100.00,
                                 "currency": "USD"
                             }
@@ -56,8 +56,8 @@ class PaymentControllerTest extends BaseIntegrationTest {
     void should_return_400_when_amount_is_negative() throws Exception {
         String invalidContent = """
                             {
-                                "senderId": 1,
-                                "recipientId": 2,
+                                "senderId": "a1dc0476-fdf0-440e-ae0c-58090ba7ac0c",
+                                "recipientId": "b2ec1587-aeb1-551f-bf1d-69101cb8bd1d",
                                 "amount": -100.00,
                                 "currency": "USD"
                             }

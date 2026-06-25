@@ -4,6 +4,7 @@ import com.example.paymentservice.domain.money.Money;
 import com.example.paymentservice.domain.payment.Payment;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 public final class TestDomainDataFactory {
 
@@ -15,6 +16,6 @@ public final class TestDomainDataFactory {
 
     public static Payment createPayment() {
         Money money = new Money(new BigDecimal(POSITIVE_MONEY_AMOUNT), CURRENCY);
-        return Payment.create(money, 1L, 2L);
+        return Payment.create(money, UUID.randomUUID(), UUID.randomUUID());
     }
 }

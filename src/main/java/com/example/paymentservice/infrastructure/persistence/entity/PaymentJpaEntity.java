@@ -21,10 +21,10 @@ public class PaymentJpaEntity {
     private UUID id;
 
     @Column(name = "sender_id", nullable = false)
-    private Long senderId;
+    private UUID senderId;
 
     @Column(name = "recipient_id", nullable = false)
-    private Long recipientId;
+    private UUID recipientId;
 
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
