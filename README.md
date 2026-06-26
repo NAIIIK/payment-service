@@ -1,6 +1,6 @@
 # Payment Service
 
-A RESTful payment processing service built with Java 21 and Spring Boot 4. Demonstrates production-grade patterns: hexagonal architecture, idempotency, optimistic locking, audit trail, structured logging, and JWT authentication.
+A RESTful payment processing service built with Java 21 and Spring Boot 4. Demonstrates production-grade patterns: hexagonal architecture, idempotency, optimistic locking, audit trail, structured logging and JWT authentication.
 
 ---
 
