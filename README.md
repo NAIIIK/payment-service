@@ -24,7 +24,7 @@ A RESTful payment processing service built with Java 21 and Spring Boot 4. Demon
 
 ## Architecture
 
-The project follows **Hexagonal Architecture** (Ports & Adapters). The domain has no dependencies on Spring or JPA — it is plain Java.
+The project follows **Hexagonal Architecture** (Ports & Adapters). The domain has no dependencies on Spring or JPA - it is plain Java.
 
 ```
 src/main/java/com/example/payment_service/
@@ -280,9 +280,9 @@ Method entry, exit, and execution time are logged via `LoggingAspect` without po
 mvn test
 ```
 
-Tests use Testcontainers — Docker must be running. PostgreSQL and Redis containers start automatically and are shared across all test classes.
+Tests use Testcontainers - Docker must be running. PostgreSQL and Redis containers start automatically and are shared across all test classes.
 
 ### Test coverage
-- **Unit tests** — `Payment`, `Money` domain logic; `JwtService` token generation and validation; `AuthService` with Mockito mocks
-- **Integration tests** — repository layer with real PostgreSQL
-- **End-to-end tests** — full HTTP stack with `MockMvc`: payment lifecycle, status transitions, idempotency, authentication
+- **Unit tests** - `Payment`, `Money` domain logic; `JwtService` token generation and validation; `AuthService` with Mockito mocks
+- **Integration tests** - repository layer with real PostgreSQL
+- **End-to-end tests** - full HTTP stack with `MockMvc`: payment lifecycle, status transitions, idempotency, authentication
