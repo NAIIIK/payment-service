@@ -110,6 +110,14 @@ Status transitions are validated inside the `Payment` aggregate. Calling `comple
 - Java 21
 - Maven
 
+### Environment variables
+
+Copy `.env.example` to `.env` and fill in the values:
+
+```bash
+cp .env.example .env
+```
+
 ### Start infrastructure
 
 ```bash
