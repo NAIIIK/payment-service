@@ -9,6 +9,10 @@ spring:
     open-in-view: false
   flyway:
     enabled: true
+  datasource:
+    hikari:
+      connection-timeout: 20000
+      validation-timeout: 3000
 
 server:
   port: 8080
