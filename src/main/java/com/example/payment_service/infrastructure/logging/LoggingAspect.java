@@ -79,7 +79,7 @@ public class LoggingAspect {
                 .findFirst()
                 .orElse("unknown");
 
-        log.warn("Exception handled in {} — {}", signature, exceptionMessage);
+        log.warn("Exception handled in {} - {}", signature, exceptionMessage);
 
         return joinPoint.proceed();
     }
