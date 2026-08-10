@@ -3,12 +3,12 @@ services:
     image: postgres:15-alpine
     environment:
       POSTGRES_DB: payment_service
-      POSTGRES_USER: ${DB_USERNAME:postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:postgres}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
     ports:
       - "5432:5432"
 
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
