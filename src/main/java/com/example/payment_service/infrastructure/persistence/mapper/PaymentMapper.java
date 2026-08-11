@@ -17,6 +17,7 @@ public class PaymentMapper {
         entity.setAmount(payment.getAmount().amount());
         entity.setCurrency(payment.getAmount().currency());
         entity.setStatus(payment.getStatus());
+        entity.setStripePaymentIntentId(payment.getStripePaymentIntentId());
         entity.setCreatedAt(payment.getCreatedAt());
 
         return entity;
@@ -31,6 +32,7 @@ public class PaymentMapper {
                 entity.getRecipientId(),
                 money,
                 entity.getStatus(),
+                entity.getStripePaymentIntentId(),
                 entity.getCreatedAt()
         );
     }

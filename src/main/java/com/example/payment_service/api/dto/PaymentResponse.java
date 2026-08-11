@@ -14,6 +14,7 @@ public record PaymentResponse(
         BigDecimal amount,
         String currency,
         PaymentStatus status,
+        String stripePaymentIntentId,
         LocalDateTime createdAt
 ) {
     public static PaymentResponse from(Payment payment) {
@@ -24,6 +25,7 @@ public record PaymentResponse(
                 payment.getAmount().amount(),
                 payment.getAmount().currency(),
                 payment.getStatus(),
+                payment.getStripePaymentIntentId(),
                 payment.getCreatedAt()
         );
     }

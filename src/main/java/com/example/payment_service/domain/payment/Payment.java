@@ -17,6 +17,7 @@ public class Payment {
     private UUID recipientId;
     private Money amount;
     private PaymentStatus status;
+    private String stripePaymentIntentId;
     private LocalDateTime createdAt;
 
     private Payment() {}
@@ -33,17 +34,25 @@ public class Payment {
         return payment;
     }
 
-    public static Payment restore(UUID id, UUID senderId, UUID recipientId,
-                                  Money amount, PaymentStatus status, LocalDateTime createdAt) {
+    public static Payment restore(UUID id, UUID senderId,
+                                  UUID recipientId, Money amount,
+                                  PaymentStatus status,
+                                  String stripePaymentIntentId,
+                                  LocalDateTime createdAt) {
         Payment payment = new Payment();
         payment.id = id;
         payment.senderId = senderId;
         payment.recipientId = recipientId;
         payment.amount = amount;
         payment.status = status;
+        payment.stripePaymentIntentId = stripePaymentIntentId;
         payment.createdAt = createdAt;
 
         return payment;
+    }
+
+    public void assignStripePaymentIntentId(String stripePaymentIntentId) {
+        this.stripePaymentIntentId = stripePaymentIntentId;
     }
 
     public void process() {

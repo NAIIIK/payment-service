@@ -36,6 +36,9 @@ public class PaymentJpaEntity {
     @Column(name = "status", nullable = false)
     private PaymentStatus status;
 
+    @Column(name = "stripe_payment_intent_id")
+    private String stripePaymentIntentId;
+
     @Version
     private Long version;
 
