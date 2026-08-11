@@ -15,3 +15,6 @@ admin:
   username: ${ADMIN_USERNAME}
   password: ${ADMIN_PASSWORD}
   email: ${ADMIN_EMAIL}
+
+stripe:
+  secret-key: ${STRIPE_SECRET_KEY}
