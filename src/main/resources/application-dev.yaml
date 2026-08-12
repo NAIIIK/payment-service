@@ -18,3 +18,4 @@ admin:
 
 stripe:
   secret-key: ${STRIPE_SECRET_KEY:stripe-key-not-configured}
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:whsec-not-configured}
