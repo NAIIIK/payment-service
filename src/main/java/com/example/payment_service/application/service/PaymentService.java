@@ -24,9 +24,9 @@ public class PaymentService {
     private final AuditService auditService;
     private final PspClient pspClient;
 
-    public PaymentCreationResult create(PaymentCreationRequest request) {
+    public PaymentCreationResult create(PaymentCreationRequest request, UUID senderId) {
         Money amount = new Money(request.amount(), request.currency());
-        Payment payment = Payment.create(amount, request.senderId(), request.recipientId());
+        Payment payment = Payment.create(amount, senderId, request.recipientId());
 
         PspPaymentResult pspResult = pspClient.createPayment(payment);
         payment.assignStripePaymentIntentId(pspResult.paymentIntentId());

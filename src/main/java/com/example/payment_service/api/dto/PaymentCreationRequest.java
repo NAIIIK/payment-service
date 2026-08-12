@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record PaymentCreationRequest(
-        @NotNull(message = "Sender ID is required") UUID senderId,
         @NotNull(message = "Recipient ID is required") UUID recipientId,
         @NotNull @DecimalMin(value = "0.01",
                 message = "Amount must be greater than 0.01") BigDecimal amount,
