@@ -55,24 +55,19 @@ public class Payment {
         this.stripePaymentIntentId = stripePaymentIntentId;
     }
 
-    public void process() {
-        validateStatus(PaymentStatus.PENDING);
-        this.status = PaymentStatus.PROCESSING;
-    }
-
     public void complete() {
-        validateStatus(PaymentStatus.PROCESSING);
+        validatePendingStatus();
         this.status = PaymentStatus.COMPLETED;
     }
 
     public void fail() {
-        validateStatus(PaymentStatus.PROCESSING);
+        validatePendingStatus();
         this.status = PaymentStatus.FAILED;
     }
 
-    private void validateStatus(PaymentStatus expected) {
-        if (status != expected) {
-            throw new InvalidPaymentStatusException(expected, status);
+    private void validatePendingStatus() {
+        if (status != PaymentStatus.PENDING) {
+            throw new InvalidPaymentStatusException(status);
         }
     }
 }
