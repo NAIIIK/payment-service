@@ -36,4 +36,10 @@ public class PaymentRepositoryImpl implements PaymentRepository {
         return jpaRepository.findById(id)
                 .map(mapper::toDomain);
     }
+
+    @Override
+    public Optional<Payment> findByStripePaymentIntentId(String stripePaymentIntentId) {
+        return jpaRepository.findByStripePaymentIntentId(stripePaymentIntentId)
+                .map(mapper::toDomain);
+    }
 }
