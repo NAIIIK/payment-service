@@ -3,10 +3,12 @@ package com.example.payment_service.api.controller;
 import com.example.payment_service.application.service.PaymentService;
 import com.example.payment_service.domain.exception.InvalidPaymentStatusException;
 import com.example.payment_service.infrastructure.config.StripeConfig;
+import com.example.payment_service.infrastructure.psp.StripeEventTypes;
 import com.stripe.exception.SignatureVerificationException;
 import com.stripe.model.Event;
 import com.stripe.model.EventDataObjectDeserializer;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.StripeObject;
 import com.stripe.net.Webhook;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,24 +36,55 @@ public class StripeWebhookController {
             return ResponseEntity.badRequest().build();
         }
 
-        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
-        if (deserializer.getObject().isEmpty()) {
+        if (!isPaymentIntentEvent(event.getType())) {
+            log.debug("Ignoring unhandled Stripe event type {}", event.getType());
             return ResponseEntity.ok().build();
         }
 
+        PaymentIntent intent = extractPaymentIntent(event);
+        if (intent == null) {
+            return ResponseEntity.internalServerError().build();
+        }
+
         switch (event.getType()) {
-            case "payment_intent.succeeded" -> handleSucceeded((PaymentIntent) deserializer.getObject().get());
-            case "payment_intent.payment_failed" -> handleFailed((PaymentIntent) deserializer.getObject().get());
+            case StripeEventTypes.PAYMENT_INTENT_SUCCEEDED -> handleSucceeded(intent);
+            case StripeEventTypes.PAYMENT_INTENT_PAYMENT_FAILED -> handleFailed(intent);
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    private PaymentIntent extractPaymentIntent(Event event) {
+        EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
+        if (deserializer.getObject().isPresent()) {
+            return (PaymentIntent) deserializer.getObject().get();
+        }
+
+        log.warn("API version mismatch for event {}, falling back to deserializeUnsafe()", event.getId());
+        try {
+            StripeObject stripeObject = deserializer.deserializeUnsafe();
+            if (stripeObject instanceof PaymentIntent intent) {
+                return intent;
+            }
+            log.error("Unsafe deserialization of event {} produced unexpected type: {}",
+                    event.getId(), stripeObject.getClass().getSimpleName());
+        } catch (Exception e) {
+            log.error("Critical deserialization failure for event {}: {}", event.getId(), e.getMessage(), e);
+        }
+
+        return null;
+    }
+
+    private boolean isPaymentIntentEvent(String eventType) {
+        return StripeEventTypes.PAYMENT_INTENT_EVENTS.contains(eventType);
     }
 
     private void handleSucceeded(PaymentIntent intent) {
         try {
             paymentService.completeByStripePaymentIntentId(intent.getId());
         } catch (InvalidPaymentStatusException e) {
-            log.info("Ignoring payment_intent.succeeded for {} : {}", intent.getId(), e.getMessage());
+            log.debug("Ignoring payment_intent.succeeded for {} : {}", intent.getId(), e.getMessage());
         }
     }
 
@@ -59,7 +92,7 @@ public class StripeWebhookController {
         try {
             paymentService.failByStripePaymentIntentId(intent.getId());
         } catch (InvalidPaymentStatusException e) {
-            log.info("Ignoring payment_intent.payment_failed for {} : {}", intent.getId(), e.getMessage());
+            log.debug("Ignoring payment_intent.payment_failed for {} : {}", intent.getId(), e.getMessage());
         }
     }
 }
