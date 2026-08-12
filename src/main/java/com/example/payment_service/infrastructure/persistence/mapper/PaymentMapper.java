@@ -23,6 +23,13 @@ public class PaymentMapper {
         return entity;
     }
 
+    public void updateJpa(PaymentJpaEntity jpaEntity, Payment payment) {
+        jpaEntity.setStatus(payment.getStatus());
+        jpaEntity.setAmount(payment.getAmount().amount());
+        jpaEntity.setCurrency(payment.getAmount().currency());
+        jpaEntity.setStripePaymentIntentId(payment.getStripePaymentIntentId());
+    }
+
     public Payment toDomain(PaymentJpaEntity entity) {
         Money money = new Money(entity.getAmount(), entity.getCurrency());
 

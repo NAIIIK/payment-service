@@ -21,9 +21,7 @@ public class PaymentRepositoryImpl implements PaymentRepository {
     public void save(Payment payment) {
         PaymentJpaEntity entity = jpaRepository.findById(payment.getId())
                 .map(existing -> {
-                    existing.setStatus(payment.getStatus());
-                    existing.setAmount(payment.getAmount().amount());
-                    existing.setCurrency(payment.getAmount().currency());
+                    mapper.updateJpa(existing, payment);
                     return existing;
                 })
                 .orElse(mapper.toJpa(payment));
