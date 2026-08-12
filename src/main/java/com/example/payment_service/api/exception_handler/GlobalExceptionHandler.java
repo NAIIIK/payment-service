@@ -62,6 +62,11 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.CONFLICT, "Already exists", ex);
     }
 
+    @ExceptionHandler(PspCommunicationException.class)
+    public ProblemDetail handlePspCommunicationException(PspCommunicationException ex) {
+        return problem(HttpStatus.BAD_GATEWAY, "Payment provider unavailable", ex);
+    }
+
     private ProblemDetail problem(HttpStatus status, String title, Exception ex) {
         ProblemDetail problem = ProblemDetail.forStatus(status);
         problem.setTitle(title);
