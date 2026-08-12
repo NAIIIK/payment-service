@@ -2,6 +2,7 @@ package com.example.payment_service.infrastructure.psp;
 
 import com.example.payment_service.application.service.PspClient;
 import com.example.payment_service.application.service.dto.PspPaymentResult;
+import com.example.payment_service.domain.exception.PspCommunicationException;
 import com.example.payment_service.domain.payment.Payment;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -34,7 +35,7 @@ public class StripeClientImpl implements PspClient {
             PaymentIntent intent = PaymentIntent.create(params);
             return new PspPaymentResult(intent.getId(), intent.getClientSecret());
         } catch (StripeException e) {
-            throw new RuntimeException("Stripe payment creation failed: " + e.getMessage(), e);
+            throw new PspCommunicationException("Stripe payment creation failed: " + e.getMessage(), e);
         }
     }
 }
