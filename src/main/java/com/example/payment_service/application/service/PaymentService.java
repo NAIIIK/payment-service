@@ -1,6 +1,8 @@
 package com.example.payment_service.application.service;
 
 import com.example.payment_service.api.dto.PaymentCreationRequest;
+import com.example.payment_service.application.service.dto.PaymentCreationResult;
+import com.example.payment_service.application.service.dto.PspPaymentResult;
 import com.example.payment_service.domain.money.Money;
 import com.example.payment_service.domain.payment.Payment;
 import com.example.payment_service.domain.exception.PaymentNotFoundException;
@@ -20,14 +22,20 @@ public class PaymentService {
 
     private final PaymentRepository repository;
     private final AuditService auditService;
+    private final PspClient pspClient;
 
-    public Payment create(PaymentCreationRequest request) {
+    public PaymentCreationResult create(PaymentCreationRequest request) {
         Money amount = new Money(request.amount(), request.currency());
         Payment payment = Payment.create(amount, request.senderId(), request.recipientId());
 
+        PspPaymentResult pspResult = pspClient.createPayment(payment);
+        payment.assignStripePaymentIntentId(pspResult.paymentIntentId());
+
         repository.save(payment);
+
         auditService.record(payment.getId(), null, payment.getStatus());
-        return payment;
+
+        return new PaymentCreationResult(payment, pspResult.clientSecret());
     }
 
     @Transactional(readOnly = true)
@@ -36,8 +44,31 @@ public class PaymentService {
                 .orElseThrow(() -> new PaymentNotFoundException(id));
     }
 
-    public Payment process(UUID id) {
-        return changeStatus(id, Payment::process);
+    public Payment completeByStripePaymentIntentId(String stripePaymentIntentId) {
+        return changeStatusByStripePaymentIntentId(stripePaymentIntentId, PaymentStatus.COMPLETED, Payment::complete);
+    }
+
+    public Payment failByStripePaymentIntentId(String stripePaymentIntentId) {
+        return changeStatusByStripePaymentIntentId(stripePaymentIntentId, PaymentStatus.FAILED, Payment::fail);
+    }
+
+    private Payment changeStatusByStripePaymentIntentId(String stripePaymentIntentId,
+                                                        PaymentStatus alreadyTerminalStatus,
+                                                        Consumer<Payment> statusChange) {
+
+        Payment payment = repository.findByStripePaymentIntentId(stripePaymentIntentId)
+                .orElseThrow(() -> new PaymentNotFoundException(stripePaymentIntentId));
+
+        if (payment.getStatus() == alreadyTerminalStatus) {
+            return payment;
+        }
+
+        PaymentStatus oldStatus = payment.getStatus();
+        statusChange.accept(payment);
+        repository.save(payment);
+        auditService.record(payment.getId(), oldStatus, payment.getStatus());
+
+        return payment;
     }
 
     public Payment complete(UUID id) {
