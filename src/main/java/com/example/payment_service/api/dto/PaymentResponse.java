@@ -15,9 +15,14 @@ public record PaymentResponse(
         String currency,
         PaymentStatus status,
         String stripePaymentIntentId,
+        String clientSecret,
         LocalDateTime createdAt
 ) {
     public static PaymentResponse from(Payment payment) {
+        return from(payment, null);
+    }
+
+    public static PaymentResponse from(Payment payment, String clientSecret) {
         return new PaymentResponse(
                 payment.getId(),
                 payment.getSenderId(),
@@ -26,6 +31,7 @@ public record PaymentResponse(
                 payment.getAmount().currency(),
                 payment.getStatus(),
                 payment.getStripePaymentIntentId(),
+                clientSecret,
                 payment.getCreatedAt()
         );
     }
