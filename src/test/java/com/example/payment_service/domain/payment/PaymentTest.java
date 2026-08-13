@@ -24,14 +24,7 @@ class PaymentTest {
     }
 
     @Test
-    void should_fail_when_completing_pending_payment() {
-        assertThatThrownBy(payment::complete)
-                .isInstanceOf(InvalidPaymentStatusException.class);
-    }
-
-    @Test
-    void should_process_and_complete_payment() {
-        payment.process();
+    void should_complete_payment() {
         payment.complete();
 
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.COMPLETED);
@@ -39,23 +32,13 @@ class PaymentTest {
 
     @Test
     void should_fail_payment() {
-        payment.process();
         payment.fail();
 
         assertThat(payment.getStatus()).isEqualTo(PaymentStatus.FAILED);
     }
 
     @Test
-    void should_throw_when_processing_already_processing_payment() {
-        payment.process();
-
-        assertThatThrownBy(payment::process)
-                .isInstanceOf(InvalidPaymentStatusException.class);
-    }
-
-    @Test
     void should_throw_when_completing_already_completed_payment() {
-        payment.process();
         payment.complete();
 
         assertThatThrownBy(payment::complete)
