@@ -3,6 +3,7 @@ package com.example.payment_service.api.controller;
 import com.example.payment_service.BaseIntegrationTest;
 import com.example.payment_service.application.service.PspClient;
 import com.example.payment_service.application.service.dto.PspPaymentResult;
+import com.example.payment_service.domain.exception.PspCommunicationException;
 import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -171,6 +172,23 @@ class PaymentControllerTest extends BaseIntegrationTest {
         mockMvc.perform(patch(URI_TEMPLATE + "/" + id + "/complete")
                         .header(HttpHeaders.AUTHORIZATION, bearer(userToken)))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void should_return_502_when_psp_communication_fails() throws Exception {
+        when(pspClient.createPayment(any()))
+                .thenThrow(new PspCommunicationException("Stripe API unavailable"));
+
+        performPostWithHeader(VALID_CONTENT, idempotencyKey, userToken)
+                .andExpect(status().isBadGateway())
+                .andExpect(jsonPath("$.title").value("Payment provider unavailable"));
+    }
+
+    @Test
+    void should_return_401_for_malformed_token() throws Exception {
+        mockMvc.perform(get(URI_TEMPLATE + "/" + UUID.randomUUID())
+                .header(HttpHeaders.AUTHORIZATION, bearer("not-a-real-jwt-token")))
+                .andExpect(status().isUnauthorized());
     }
 
     private ResultActions performPostWithHeader(String content, String idempotencyKey, String token) throws Exception {
