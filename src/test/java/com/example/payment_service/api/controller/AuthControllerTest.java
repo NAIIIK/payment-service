@@ -89,12 +89,31 @@ class AuthControllerTest extends BaseIntegrationTest {
     }
 
     @Test
+    void should_return_404_when_logging_in_with_unknown_username() throws Exception {
+        performPostWithUniqueUsername(
+                LOGIN_URI, VALID_LOGIN_CONTENT, "nonexistent-" + UUID.randomUUID()
+        )
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.title").value("User not found"));
+    }
+
+    @Test
     void should_return_error_when_password_is_incorrect() throws Exception {
         performPostWithUniqueUsername(REGISTER_URI, VALID_REGISTRATION_CONTENT, uniqueUsername)
                 .andExpect(status().isOk());
 
         performPostWithUniqueUsername(LOGIN_URI, INCORRECT_PASSWORD_LOGIN_CONTENT, uniqueUsername)
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void should_return_409_when_registering_with_duplicate_username() throws Exception {
+        performPostWithUniqueUsername(REGISTER_URI, VALID_REGISTRATION_CONTENT, uniqueUsername)
+                .andExpect(status().isOk());
+
+        performPostWithUniqueUsername(REGISTER_URI, VALID_REGISTRATION_CONTENT, uniqueUsername)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.title").value("Already exists"));
     }
 
     private ResultActions performPostWithUniqueUsername(String uri, String content, String uniqueUsername) throws Exception {
