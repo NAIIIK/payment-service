@@ -4,6 +4,7 @@ import com.example.payment_service.domain.user.User;
 import com.example.payment_service.infrastructure.logging.Sensitive;
 import com.example.payment_service.infrastructure.logging.SensitiveResult;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -38,11 +39,11 @@ public class JwtService {
     }
 
     public boolean isTokenValid(@Sensitive String token, String username) {
-        return extractUsername(token).equals(username) && !isTokenExpired(token);
-    }
-
-    private boolean isTokenExpired(String token) {
-        return extractClaim(token, Claims::getExpiration).before(new Date());
+        try {
+            return extractUsername(token).equals(username);
+        } catch (ExpiredJwtException e) {
+            return false;
+        }
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> resolver) {
