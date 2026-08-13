@@ -335,15 +335,15 @@ Method entry, exit, and execution time are logged via `LoggingAspect` without po
 
 ---
 
-## Running Tests
+## Running tests
 
 ```bash
 mvn test
 ```
 
-Tests use Testcontainers - Docker must be running. PostgreSQL and Redis containers start automatically and are shared across all test classes. Stripe calls are mocked in tests (`PspClient` is a Spring bean easily replaced with `@MockBean`); no real network calls to Stripe are made during the test suite.
+Tests use Testcontainers - Docker must be running. PostgreSQL and Redis containers start automatically and are shared across all test classes extending `BaseIntegrationTest`. Integration tests exercise the real security filter chain (JWT authentication via `JwtService`, real users persisted per test) rather than mocking authentication. Stripe calls are mocked in tests (`PspClient` and `PaymentService` are Spring beans easily replaced with `@MockitoBean`); no real network calls to Stripe are made during the test suite.
 
 ### Test coverage
-- **Unit tests** - `Payment`, `Money` domain logic; `JwtService` token generation and validation; `AuthService` with Mockito mocks
+- **Unit tests** - `Payment`, `Money` domain logic; `JwtService` token generation and validation; `AuthService`, `PaymentService` with Mockito mocks
 - **Integration tests** - repository layer with real PostgreSQL
-- **End-to-end tests** - full HTTP stack with `MockMvc`: payment lifecycle, status transitions, idempotency, authentication, Stripe webhook handling
+- **End-to-end tests** - full HTTP stack with `MockMvc`: payment lifecycle, status transitions, idempotency, authentication and registration, Stripe webhook handling (signature verification, event routing, idempotent delivery)
