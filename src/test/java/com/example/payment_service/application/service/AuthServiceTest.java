@@ -5,9 +5,11 @@ import com.example.payment_service.domain.exception.UserNotFoundException;
 import com.example.payment_service.domain.user.User;
 import com.example.payment_service.domain.user.UserRepository;
 import com.example.payment_service.application.service.util.TestServiceDataFactory;
+import com.example.payment_service.domain.user.UserRole;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -55,8 +57,15 @@ class AuthServiceTest {
                 TestServiceDataFactory.TEST_EMAIL
         );
 
+        ArgumentCaptor<User> savedUserCaptor = ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(savedUserCaptor.capture());
+        User savedUser = savedUserCaptor.getValue();
+
         assertThat(token).isEqualTo(TestServiceDataFactory.TEST_JWT_TOKEN);
-        verify(userRepository).save(any(User.class));
+        assertThat(savedUser.username()).isEqualTo(TestServiceDataFactory.TEST_USERNAME);
+        assertThat(savedUser.password()).isEqualTo(TestServiceDataFactory.HASHED_TEST_PASSWORD);
+        assertThat(savedUser.email()).isEqualTo(TestServiceDataFactory.TEST_EMAIL);
+        assertThat(savedUser.role()).isEqualTo(UserRole.MERCHANT);
     }
 
     @Test

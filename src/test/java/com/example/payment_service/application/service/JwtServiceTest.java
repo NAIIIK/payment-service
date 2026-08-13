@@ -2,10 +2,14 @@ package com.example.payment_service.application.service;
 
 import com.example.payment_service.domain.user.User;
 import com.example.payment_service.application.service.util.TestServiceDataFactory;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,5 +49,17 @@ class JwtServiceTest {
     @Test
     void should_not_validate_token_for_wrong_name() {
         assertThat(jwtService.isTokenValid(token, "wrong-name")).isFalse();
+    }
+
+    @Test
+    void should_not_validate_expired_token() {
+        String expiredToken = Jwts.builder()
+                .subject(TestServiceDataFactory.TEST_USERNAME)
+                .issuedAt(new Date(System.currentTimeMillis() - 100_000))
+                .expiration(new Date(System.currentTimeMillis() - 1_000))
+                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(TestServiceDataFactory.SECRET_KEY)))
+                .compact();
+
+        assertThat(jwtService.isTokenValid(expiredToken, TestServiceDataFactory.TEST_USERNAME)).isFalse();
     }
 }
