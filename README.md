@@ -30,27 +30,26 @@ The project follows **Hexagonal Architecture** (Ports & Adapters). The domain ha
 ```
 src/main/java/com/example/payment_service/
 ├── domain/
-│   ├── payment/           # Payment aggregate, PaymentStatus, PaymentRepository (interface)
-│   ├── payment_history/   # PaymentHistory record, PaymentHistoryRepository (interface)
-│   ├── user/              # User record, UserRole enum, UserRepository (interface)
-│   ├── money/             # Money value object
-│   └── exception/         # Domain exceptions
+│   ├── payment/                # Payment aggregate, PaymentStatus, PaymentRepository (interface)
+│   ├── payment_history/        # PaymentHistory record, PaymentHistoryRepository (interface)
+│   ├── user/                   # User record, UserRole enum, UserRepository (interface)
+│   ├── money/                  # Money value object
+│   └── exception/              # Domain exceptions
 ├── application/
-│   └── service/
-│       ├── PaymentService, AuditService, IdempotencyService, AuthService, JwtService
-│       ├── PspClient          # Port - abstracts the payment service provider
+│   └── service/                # Service classes
+│       ├── PspClient           # Port - abstracts the payment service provider
 │       └── dto/                # PspPaymentResult, PaymentCreationResult
 ├── infrastructure/
-│   ├── persistence/       # JPA entities, mappers, repository implementations
-│   ├── security/          # JwtAuthenticationFilter, UserDetailsServiceImpl, UserPrincipal
-│   ├── idempotency/       # @Idempotent annotation + IdempotencyAspect
-│   ├── logging/           # LoggingAspect
-│   ├── psp/                # StripeClientImpl (PspClient adapter), StripeEventTypes
-│   └── config/             # SecurityConfig, RedisConfig, StripeConfig, OpenApiConfig
+│   ├── persistence/            # JPA entities, mappers, repository implementations
+│   ├── security/               # JwtAuthenticationFilter, UserDetailsServiceImpl, UserPrincipal
+│   ├── idempotency/            # @Idempotent annotation + IdempotencyAspect
+│   ├── logging/                # LoggingAspect
+│   ├── psp/                    # StripeClientImpl (PspClient adapter), StripeEventTypes util class
+│   └── config/                 # SecurityConfig, RedisConfig, StripeConfig
 └── api/
-    ├── controller/        # PaymentController, AuthController, StripeWebhookController
-    ├── dto/                # PaymentCreationRequest, PaymentResponse, RegisterRequest, LoginRequest, AuthResponse
-    └── exception_handler/ # GlobalExceptionHandler
+    ├── controller/             # PaymentController, AuthController, StripeWebhookController
+    ├── dto/                    # PaymentCreationRequest, PaymentResponse, RegisterRequest, LoginRequest, AuthResponse
+    └── exception_handler/      # GlobalExceptionHandler
 ```
 
 ### Dependency rule
@@ -170,7 +169,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 docker-compose up -d
 ```
 
-This starts PostgreSQL on port `5432` and Redis on port `6379`.
+This starts PostgreSQL on port `5432` and Redis on port `6379` by default, you can configure it changing the env variables.
 
 ### Forward Stripe webhooks locally
 
