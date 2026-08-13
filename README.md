@@ -66,17 +66,17 @@ api → application → domain ← infrastructure
 ## Database Schema
 
 ### payments
-| Column                    | Type          | Notes                                                               |
-|----------------------------|---------------|---------------------------------------------------------------------|
-| id                         | UUID          | Primary key, generated in domain                                    |
-| sender_id                  | UUID          | Derived from the authenticated JWT - never accepted from the client |
-| recipient_id               | UUID          |                                                                     |
-| amount                     | NUMERIC(19,4) |                                                                     |
-| currency                   | VARCHAR(3)    | ISO 4217 (USD, EUR, PLN)                                            |
-| status                     | VARCHAR(20)   | PENDING / COMPLETED / FAILED                                        |
-| stripe_payment_intent_id   | VARCHAR(255)  | Set once, right after PSP creation                                  |
-| version                    | BIGINT        | Optimistic locking                                                  |
-| created_at                 | TIMESTAMP     |                                                                     |
+| Column                      | Type          | Notes                                                               |
+|-----------------------------|---------------|---------------------------------------------------------------------|
+| id                          | UUID          | Primary key, generated in domain                                    |
+| sender_id                   | UUID          | Derived from the authenticated JWT - never accepted from the client |
+| recipient_id                | UUID          |                                                                     |
+| amount                      | NUMERIC(19,4) |                                                                     |
+| currency                    | VARCHAR(3)    | ISO 4217 (USD, EUR, PLN)                                            |
+| status                      | VARCHAR(20)   | PENDING / COMPLETED / FAILED                                        |
+| stripe_payment_intent_id    | VARCHAR(255)  | Set once, right after PSP creation                                  |
+| version                     | BIGINT        | Optimistic locking                                                  |
+| created_at                  | TIMESTAMP     |                                                                     |
 
 ### payment_history
 | Column      | Type        | Notes             |
