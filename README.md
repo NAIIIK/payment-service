@@ -43,6 +43,7 @@ src/main/java/com/example/payment_service/
 │   ├── persistence/            # JPA entities, mappers, repository implementations
 │   ├── security/               # JwtAuthenticationFilter, UserDetailsServiceImpl, UserPrincipal
 │   ├── idempotency/            # @Idempotent annotation + IdempotencyAspect
+│   ├── initializer             # AdminInitializer
 │   ├── logging/                # LoggingAspect
 │   ├── psp/                    # StripeClientImpl (PspClient adapter), StripeEventTypes util class
 │   └── config/                 # SecurityConfig, RedisConfig, StripeConfig
