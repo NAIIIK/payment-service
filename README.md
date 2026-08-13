@@ -7,7 +7,7 @@ A RESTful payment processing service built with Java 21 and Spring Boot 4. Demon
 ## Tech Stack
 
 | Layer          | Technology                          |
-|----------------|--------------------------------------|
+|----------------|-------------------------------------|
 | Language       | Java 21                             |
 | Framework      | Spring Boot 4.1                     |
 | Security       | Spring Security + JWT (JJWT 0.12.6) |
