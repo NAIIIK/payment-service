@@ -348,3 +348,34 @@ Tests use Testcontainers - Docker must be running. PostgreSQL and Redis containe
 - **Unit tests** - `Payment`, `Money` domain logic; `JwtService` token generation and validation; `AuthService`, `PaymentService` with Mockito mocks
 - **Integration tests** - repository layer with real PostgreSQL
 - **End-to-end tests** - full HTTP stack with `MockMvc`: payment lifecycle, status transitions, idempotency, authentication and registration, Stripe webhook handling (signature verification, event routing, idempotent delivery)
+
+### Coverage reports (JaCoCo)
+
+```xml
+<plugin>
+    <groupId>org.jacoco</groupId>
+    <artifactId>jacoco-maven-plugin</artifactId>
+    <version>0.8.15</version>
+    <executions>
+        <execution>
+            <goals>
+                <goal>prepare-agent</goal>
+            </goals>
+        </execution>
+        <execution>
+            <id>report</id>
+            <phase>test</phase>
+            <goals>
+                <goal>report</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+```
+
+`report` is bound to the `test` phase, so a plain `mvn clean test` regenerates the report - no separate `jacoco:report` goal needed.
+
+```bash
+mvn clean test
+open target/site/jacoco/index.html   # HTML report, per-package and per-class breakdown
+```
